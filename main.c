@@ -118,7 +118,7 @@ int copy_and_replace ( char * src, int src_len, char * dst, int dst_size, int ho
 			}
 			else /* a == 0 && b == 1 */
 			{
-				/* do noting */
+				/* never be here */
 			}
 
 			k ++;
@@ -181,20 +181,20 @@ int main ( )
 	char unknown_chars_1 [ ] = "x<HTML>x<HTM>xSELECTxHLx";
 	char unknown_chars_2 [ MAX_TEST_SIZE ];
 
-	int len = sizeof ( unknown_chars_1 ) / sizeof ( unknown_chars_1 [ 0 ] ) - 1;
-	int len_2;
+	int len_1 = sizeof ( unknown_chars_1 ) / sizeof ( unknown_chars_1 [ 0 ] ) - 1;
+	int len_2 = 0;
 
-	printf ( "--------------------------------------\n%d:%s\n", len, unknown_chars_1 );
-	len_2 = copy_and_replace ( unknown_chars_1, len, unknown_chars_2, MAX_TEST_SIZE );
+	printf ( "--------------------------------------\n%d:%s\n", len_1, unknown_chars_1 );
+	len_2 = copy_and_replace ( unknown_chars_1, len_1, unknown_chars_2, MAX_TEST_SIZE );
 	printf ( "%d:%s\n", len_2, unknown_chars_2 );
 	
-	printf ( "--------------------------------------\n%d:%s\n", len, unknown_chars_1 );
-	len_2 = copy_and_replace ( unknown_chars_1, len, unknown_chars_2, MAX_TEST_SIZE, COPY_AND_APPEND );
+	printf ( "--------------------------------------\n%d:%s\n", len_1, unknown_chars_1 );
+	len_2 = copy_and_replace ( unknown_chars_1, len_1, unknown_chars_2, MAX_TEST_SIZE, COPY_AND_APPEND );
 	printf ( "%d:%s\n", len_2, unknown_chars_2 );
 
-	printf ( "--------------------------------------\n%d:%s\n", len, unknown_chars_1 );
-	len_2 = copy_and_replace ( unknown_chars_1, len, unknown_chars_2, MAX_TEST_SIZE, COPY_AND_INSERT );
+	printf ( "--------------------------------------\n%d:%s\n", len_1, unknown_chars_1 );
+	len_2 = copy_and_replace ( unknown_chars_1, len_1, unknown_chars_2, MAX_TEST_SIZE, COPY_AND_INSERT );
 	printf ( "%d:%s\n", len_2, unknown_chars_2 );
-	
+
 	return 0;
 }
