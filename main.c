@@ -60,16 +60,16 @@ int copy_and_replace ( char * src, int src_len, char * dst, int dst_size, int ho
 			{
 				bb = '*' == *( pos + k );
 
-				if ( i == src_len )
-				{
-					printf ( "^\n" );
-					a = 0;
-					i = ii;
-					break;
-				}
-	
 				if ( ! bb )
 				{
+					if ( i == src_len ) /* must be here, do NOT move this line */
+					{
+						printf ( "^\n" );
+						a = 0;
+						i = ii;
+						break;
+					}
+
 					if ( *( src + i ) != *( pos + k ) )
 					{
 						printf ( "%c", *( src + i ) );
@@ -88,18 +88,18 @@ int copy_and_replace ( char * src, int src_len, char * dst, int dst_size, int ho
 			}
 			else if ( a == 1 && b == 0 )
 			{
-				b = '*' == *( pos + k ); /* must be here, do NOT move this line */
-
-				if ( i == src_len )
-				{
-					printf ( "^\n" );
-					a = 0;
-					i = ii;
-					break;
-				}
+				b = '*' == *( pos + k );
 
 				if ( ! b )
-				{ 
+				{
+					if ( i == src_len ) /* must be here, do NOT move this line */
+					{
+						printf ( "^\n" );
+						a = 0;
+						i = ii;
+						break;
+					}
+
 					if ( *( src + i ) != *( pos + k ) )
 					{
 						printf ( "?\n" );
