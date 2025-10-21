@@ -1,27 +1,32 @@
 /*
  * main.c
  *
- * Copyright (C) 2025.10.20 TOP WAYE topwaye@hotmail.com
+ * Copyright (C) 2025.10.21 TOP WAYE topwaye@hotmail.com
  * 
  * copy and replace pattern words with predefined words
  * 
  * a wildcard (*) matches zero or more characters
+ * 
+ * as a result, a number sign (#) represents a runtime current matched string
  */
 
 #include <stdio.h>
 
-#define COPY_AND_REPLACE	0 /* replace a matched string with a new string */
-#define COPY_AND_APPEND		1 /* insert a new string after a matched string */
-#define COPY_AND_INSERT		2 /* insert a new string before a matched string */
-
 char pattern [ ] = "*H*****L***";
 char replace [ ] = "hello world";
+/*
+char replace [ ] = "#hello world";
+char replace [ ] = "hello world#";
+char replace [ ] = "#hello#world";
+char replace [ ] = "hello##world";
+*/
 
-int copy_and_replace ( char * src, int src_len, char * dst, int dst_size, int how = COPY_AND_REPLACE )
+int copy_and_replace ( char * src, int src_len, char * dst, int dst_size )
 {
 	char * pos;
-	int h, i, k;
+	int i, j, h, k;
 	int a, b, bb, ii;
+	int r;
 
 	if ( dst_size < 1 ) /* size >= len + 1 */
 		return 0;
@@ -30,9 +35,9 @@ int copy_and_replace ( char * src, int src_len, char * dst, int dst_size, int ho
 	while ( i < src_len )
 	{
 		a = 0, b = 0;
-
-		pos = pattern;
-
+		
+		pos = pattern; 
+		
 		k = 0; 
 		while ( *( pos + k ) )
 		{
@@ -131,33 +136,32 @@ int copy_and_replace ( char * src, int src_len, char * dst, int dst_size, int ho
 			if ( b ) /* must be here, do NOT move this line */
 				i = src_len;
 
-			if ( how == COPY_AND_APPEND )
-			while ( ii < i )
-			{
-				if ( h + 1 == dst_size )
-					return 0;
-
-				*( dst + h ++ ) = *( src + ii ++ );
-			}
-
 			pos = replace;
 
 			k = 0;
 			while ( *( pos + k ) )
-			{			
-				if ( h + 1 == dst_size )
-					return 0;
-
-				*( dst + h ++ ) = *( pos + k ++ );
-			}
-
-			if ( how == COPY_AND_INSERT )
-			while ( ii < i )
 			{
 				if ( h + 1 == dst_size )
 					return 0;
 
-				*( dst + h ++ ) = *( src + ii ++ );
+				r = '#' == *( pos + k );
+				
+				if ( r )
+				{
+					j = ii;
+					while ( j < i )
+					{
+						if ( h + 1 == dst_size )
+							return 0;
+
+						*( dst + h ++ ) = *( src + j ++ );
+					}
+
+					k ++;
+					continue;
+				}
+
+				*( dst + h ++ ) = *( pos + k ++ );
 			}
 
 			continue;
@@ -181,20 +185,11 @@ int main ( )
 	char unknown_chars_1 [ ] = "x<HTML>x<HTM>xSELECTxHLx";
 	char unknown_chars_2 [ MAX_TEST_SIZE ];
 
-	int len_1 = sizeof ( unknown_chars_1 ) / sizeof ( unknown_chars_1 [ 0 ] ) - 1;
-	int len_2 = 0;
+	int len = sizeof ( unknown_chars_1 ) / sizeof ( unknown_chars_1 [ 0 ] ) - 1;
 
-	printf ( "--------------------------------------\n%d:%s\n", len_1, unknown_chars_1 );
-	len_2 = copy_and_replace ( unknown_chars_1, len_1, unknown_chars_2, MAX_TEST_SIZE );
-	printf ( "%d:%s\n", len_2, unknown_chars_2 );
-	
-	printf ( "--------------------------------------\n%d:%s\n", len_1, unknown_chars_1 );
-	len_2 = copy_and_replace ( unknown_chars_1, len_1, unknown_chars_2, MAX_TEST_SIZE, COPY_AND_APPEND );
-	printf ( "%d:%s\n", len_2, unknown_chars_2 );
-
-	printf ( "--------------------------------------\n%d:%s\n", len_1, unknown_chars_1 );
-	len_2 = copy_and_replace ( unknown_chars_1, len_1, unknown_chars_2, MAX_TEST_SIZE, COPY_AND_INSERT );
-	printf ( "%d:%s\n", len_2, unknown_chars_2 );
+	printf ( "%d:%s\n", len, unknown_chars_1 );
+	len = copy_and_replace ( unknown_chars_1, len, unknown_chars_2, MAX_TEST_SIZE );
+	printf ( "%d:%s\n", len, unknown_chars_2 );
 
 	return 0;
 }
